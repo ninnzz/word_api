@@ -36,8 +36,39 @@ def add_quiz_from_text(res):
     tt = TextTeaser()
 
     summarized = tt.summarize(params['title'], params['text'], "Undefined", "Undefined", 20)
+    quiz_items = extract_questions(summarized, params['title'])
 
-    return res.send(summarized)
+    quiz_obj = {
+        'article_url': None,
+        'article_title': params['title'],
+        'article_summary': ' '.join(summarized)
+    }
+
+    ### Add to the quiz database
+    quiz = Quiz(quiz_obj)
+    db.session.add(quiz)
+    db.session.commit() 
+
+    for qi in quiz_items:
+        tmp_obj = {
+            'quiz_id': quiz.id,
+            'question_phrase': qi['item'], 
+            'choices': ','.join(qi['choices']),
+            'correct_choice': qi['correct_choice'],
+            'answer': qi['answer']
+        }
+        db.session.add(Questions(tmp_obj))
+
+    db.session.commit() 
+
+    res_obj = {
+        'quiz_id': quiz.id,
+        'questions': quiz_items,
+        'article_title': quiz.article_title,
+        'article_summary': quiz.article_summary
+    }
+
+    return res.send(res_obj)
 
 @mod_quiz.route('/generate_from_article', methods=['POST'])
 @make_response

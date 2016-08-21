@@ -44,6 +44,6 @@ def exception_encountered(error):
     return make_response(jsonify({'error': error.to_dict()}), error.status_code)
 
 
-@mod_err.app_errorhandler(Exception)
-def exception_encountered(error):
-    return make_response(jsonify({'error': str(error)}), 500)
+# @mod_err.app_errorhandler(Exception)
+# def exception_encountered(error):
+#     return make_response(jsonify({'error': str(error)}), 500)
