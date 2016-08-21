@@ -1,9 +1,21 @@
-Flask Boilerplate
+DevCup 2016 App (backend)
 =====
 
 Introduction
 -----
-A boilerplate for REST APIs implement using python flask. Ideal for doing micro services and API integrations.
+Backend API to handle the generation of quiz from article.
+
+
+##### Approach
+We used serveral references for the analyzer. 
+
+First we need to get the summary of a certain article. We use the `newspaper.Article` library to be able to get and extract meaningful stuff that could represent an article in a web page.
+
+Next is we need to summarize the article. Getting question from the whole article sentences is prone to error and will lead to A LOT of false questions. We need something to get the gist of the article so we use [textteaser](https://github.com/DataTeaser/textteaser). We feed the article to text teaser after we extract it from the web page.
+
+Then we need to get the relevant sentences and extract the trivia questions we want. There are several guidelines and demo code that we use here: https://github.com/atbaker/wikipedia-question-generator. The implementation is sound but there are still so many false positives so we need to improve on this.
+
+Lastly is generating the other 3 choices (since this is a multiple choice type of question). This prove to be really difficult since we do not want to give away too many context clues if we just generate random words. So what we did is that we get all the relevant nouns and noun phrases in the sumamrized text. We get the choices from there based on their position on the article (1st question, we will get in the first part of the summary for the choices) so that the terms and ideas is probably related.
 
 #### Running the app
 - Runs on Python 3.4+
@@ -49,62 +61,4 @@ A boilerplate for REST APIs implement using python flask. Ideal for doing micro 
     +-- requirements.txt
     +-- run.py
     +-- setup.py
-```
-
-
-#### Implementing a module
-```
-    +-- module/
-    |   +-- __init__.py
-    |   +-- dispatch.py
-    |   +-- model.py
-```
-###### dispatch
-Dispatch is where you store all the request related context. The following are handled by `dispatch.py`
-- reuqest handling
-- response handling
-- routing of request
-- authentication
-
-We need to make sure that the request context does not mix with any of the app logic.
-
-###### model
-Model is the the one that handles the transactional operations.
-- Insert
-- Update
-- Get
-- Search
-- Delete
-
-Contributing
------
-Push all the changes to your own branch before making a pull request to the master branch
-###### New feature request
-For adding new feature make sure to follow the following format for the pull request
-- Title should be `feature/<feature_name>`
-- Description should have the ff template
-```
-    ### Changes
-        - change description
-        - change description
-    ### Testsing
-        - List of tests done preferably with screenshots
-    ### Contributor info
-        - Name
-        - Email
-```
-
-###### Fixing issues
-For adding new feature make sure to follow the following format for the pull request
-- Title should be `fix/<issue_that_needs_fixing>`
-- Description should have the ff template
-```
-    ### Changes
-        - change description
-        - change description
-    ### Testsing
-        - List of tests done preferably with screenshots
-    ### Contributor info
-        - Name
-        - Email
 ```
